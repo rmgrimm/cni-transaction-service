@@ -31,7 +31,7 @@ On Linux / Mac, run:
 On Windows, run:
 
 ```shell script
-mvnw.bat spring-boot:run
+mvnw.cmd spring-boot:run
 ```
 
 Notice that by default, the `spring-boot:run` command runs with the `dev` profile activated. Differences
