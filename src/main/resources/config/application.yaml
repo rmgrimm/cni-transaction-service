@@ -1,0 +1,22 @@
+spring:
+  jackson:
+    date-format: com.redhat.consulting.transaction.RFC3339DateFormat
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+  mvc:
+    log-resolved-exception: true
+  # TODO(rgrimm): Set up helm charts for running in OpenShift
+  #  datasource:
+  #    url:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+    open-in-view: off
+
+dozer:
+  mapping-files:
+    - classpath:dozer/transaction-record-mapping.xml

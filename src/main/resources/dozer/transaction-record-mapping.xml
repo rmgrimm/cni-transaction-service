@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozermapper.github.io/schema/bean-mapping"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozermapper.github.io/schema/bean-mapping http://dozermapper.github.io/schema/bean-mapping.xsd">
+
+    <mapping>
+        <class-a>com.redhat.consulting.transaction.model.TransactionRecord</class-a>
+        <class-b>com.redhat.consulting.transaction.jpa.entity.TransactionEntity</class-b>
+        <field>
+            <a>id</a>
+            <b>transactionId</b>
+        </field>
+        <field>
+            <a>status</a>
+            <b>status</b>
+        </field>
+        <field>
+            <a>source.institution</a>
+            <b>sourceInstitution</b>
+        </field>
+        <field>
+            <a>source.account</a>
+            <b>sourceAccount</b>
+        </field>
+        <field>
+            <a>target.institution</a>
+            <b>targetInstitution</b>
+        </field>
+        <field>
+            <a>target.account</a>
+            <b>targetAccount</b>
+        </field>
+        <field>
+            <a>value.amount</a>
+            <b>currencyAmount</b>
+        </field>
+        <field>
+            <a>value.currency</a>
+            <b>currencyUnit</b>
+        </field>
+        <field>
+            <a>requestTimestamp</a>
+            <b>requestTimestamp</b>
+        </field>
+        <field>
+            <a>processTimestamp</a>
+            <b>processTimestamp</b>
+        </field>
+        <field>
+            <a>cancelTimestamp</a>
+            <b>cancelTimestamp</b>
+        </field>
+    </mapping>
+
+    <mapping>
+        <class-a>com.redhat.consulting.transaction.model.TransactionRequest</class-a>
+        <class-b>com.redhat.consulting.transaction.model.TransactionRecord</class-b>
+        <field>
+            <a>source</a>
+            <b>source</b>
+        </field>
+        <field>
+            <a>target</a>
+            <b>target</b>
+        </field>
+        <field>
+            <a>value</a>
+            <b>value</b>
+        </field>
+    </mapping>
+
+</mappings>

@@ -1,0 +1,13 @@
+openapi:
+  transactionService:
+    # Really, this isn't much different from server.servlet.context-path
+    # because there are no other services generated.
+    base-path: /dev
+
+spring:
+  datasource:
+    url: jdbc:h2:mem:devdb;DB_CLOSE_DELAY=-1
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create

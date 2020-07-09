@@ -1,0 +1,458 @@
+openapi: 3.0.2
+info:
+  title: Transaction Service
+  version: 1.0.0
+  description: Describes a transaction service for an example banking service
+  license:
+    name: Apache 2.0
+    url: 'https://www.apache.org/licenses/LICENSE-2.0'
+servers:
+  - url: /
+    description: Server relative to documentation path
+paths:
+  /transactions:
+    summary: Path used to manage the list of transactions.
+    description: |-
+      The REST endpoint/path used to list and create zero or more `TransactionRecord`
+      entities.  This path contains a `GET` and `POST` operation to perform the list
+      and create tasks, respectively.
+    get:
+      tags:
+        - transaction
+      parameters:
+        - examples:
+            No Filter:
+              value: []
+          name: source.account
+          description: Filter for `TransactionRecord`s by source account's `account` field
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+        - examples:
+            No Filter:
+              value: []
+            Only ABC Bank:
+              value:
+                - abc bank
+          name: source.institution
+          description: Filter for `TransactionRecord`s by source account's `institution` field
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+        - examples:
+            No Filter:
+              value: []
+          name: target.account
+          description: Filter for `TransactionRecord`s by target account's `account` field
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+        - examples:
+            No Filter:
+              value: []
+          name: target.institution
+          description: Filter for `TransactionRecord`s by target account's `institution` field
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+        - examples:
+            No Filter:
+              value: []
+          name: value.amount
+          description: Filter for `TransactionRecord`s by value's `amount` field
+          schema:
+            type: array
+            items:
+              format: double
+              type: number
+          in: query
+        - examples:
+            No Filter:
+              value: []
+          name: value.currency
+          description: Filter for `TransactionRecord`s by value's `currency` field
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+        - examples:
+            No Filter:
+              value: []
+            Filter for Unprocessed Requests:
+              value:
+                - REQUESTED
+          name: status
+          description: Filter for `TransactionRecord`s by the `status` field
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+        - examples:
+            No Sort:
+              value: []
+            Sort By Target Institution Descending:
+              value:
+                - 'target.institution,DESC'
+          name: sort
+          description: |-
+            Array of sort parameters; first item indicates highest priority of sort, and
+            subsequent sort parameters break ties. Sort parameters are specified by
+            field name with an optional `,ASC` or `,DESC`; for example, `value.amount,ASC`.
+          schema:
+            type: array
+            items:
+              type: string
+          in: query
+        - examples:
+            First Page:
+              value: '0'
+          name: page
+          description: |-
+            The page number to retrieve, partitioned into equal pages of `TransactionRecord`s
+            with size according to the `size` parameter; default is the first page: page 0
+          schema:
+            type: integer
+          in: query
+        - examples:
+            Default Size:
+              value: '20'
+          name: size
+          description: |-
+            Number of `TransactionRecord` elements that should be included per page
+            retrieved; default is 20
+          schema:
+            type: integer
+          in: query
+        - examples:
+            Paged Results:
+              value: 'false'
+            Unpaged Results:
+              value: 'true'
+          name: unpaged
+          description: |-
+            Whether all matching `TransactionRecord`s should be separated into pages
+            (`false`) or should be all returned at once (`true`)
+          schema:
+            type: boolean
+          in: query
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedTransactionRecords'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/PagedTransactionRecords'
+          description: |-
+            Successful response - returns a `PagedTransactionRecords`, which is a page of
+            `TransactionRecord` entities.
+      operationId: listTransactions
+      summary: List Transactions
+      description: Gets a list of `TransactionRecord` entities.
+    post:
+      requestBody:
+        description: |-
+          A new `TransactionRequest` for use as basis for
+          creation of a `TransactionRecord`.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/TransactionRequest'
+        required: true
+      tags:
+        - transaction
+      responses:
+        '201':
+          description: Successful response.
+      operationId: createTransaction
+      summary: Create a new Transaction
+      description: Creates a new instance of a `TransactionRecord` by submitting a `TransactionRequest`.
+  '/transactions/{transactionId}':
+    summary: Path used to manage a single transaction.
+    description: |-
+      The REST endpoint/path used to get, update, and delete single instances of a
+      `TransactionRecord`.  This path contains `GET`, `PUT`, and `DELETE` operations
+      used to perform the get, update, and delete tasks, respectively.
+    get:
+      tags:
+        - transaction
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionRecord'
+            text/xml:
+              schema:
+                $ref: '#/components/schemas/TransactionRecord'
+          description: Successful response - returns a single `TransactionRecord`.
+        '404':
+          $ref: '#/components/responses/TransactionNotFound'
+      operationId: getTransaction
+      summary: Get a Transaction
+      description: Gets the details of a single instance of a `TransactionRecord`.
+    put:
+      requestBody:
+        description: Updated `TransactionRecord` information.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionRecord'
+          text/xml:
+            schema:
+              $ref: '#/components/schemas/TransactionRecord'
+        required: true
+      tags:
+        - transaction
+      responses:
+        '202':
+          description: Successful response.
+        '404':
+          $ref: '#/components/responses/TransactionNotFound'
+      operationId: updateTransaction
+      summary: Update a Transaction
+      description: Updates an existing `TransactionRecord`.
+    delete:
+      tags:
+        - transaction
+      responses:
+        '204':
+          description: Successful response.
+        '404':
+          $ref: '#/components/responses/TransactionNotFound'
+      operationId: deleteTransaction
+      summary: Delete a Transaction
+      description: Deletes an existing `TransactionRecord`.
+    parameters:
+      - name: transactionId
+        description: A unique identifier for a `TransactionRecord`.
+        schema:
+          type: string
+        in: path
+        required: true
+components:
+  schemas:
+    TransactionStatus:
+      description: Current transaction status
+      enum:
+        - REQUESTED
+        - POSTED
+        - REJECTED
+        - CANCELLED
+      type: string
+    TransactionId:
+      description: Unique identifier for the transaction
+      type: string
+    TransactionRequest:
+      title: TransactionRequest
+      description: Request for a new transaction
+      required:
+        - value
+        - target
+        - source
+      type: object
+      properties:
+        source:
+          $ref: '#/components/schemas/Account'
+          description: Account information describing where funds will be debited
+          properties:
+            institution:
+              type: string
+              example: abc bank
+            account:
+              type: string
+              example: abc1234567
+        target:
+          $ref: '#/components/schemas/Account'
+          description: Account information describing where funds will be credited
+          properties:
+            institution:
+              type: string
+              example: xyz bank
+            account:
+              type: string
+              example: '12345678'
+        value:
+          $ref: '#/components/schemas/CurrencyAmount'
+          description: Details about funds that are transferred
+          properties:
+            amount:
+              format: double
+              type: number
+              example: 123.45
+            currency:
+              type: string
+              example: USD
+      example:
+        source:
+          institution: abc bank
+          account: abc1234567
+        target:
+          institution: xyz bank
+          account: '12345678'
+        value:
+          amount: 123.45
+          currency: USD
+    TransactionRecord:
+      title: TransactionRecord
+      description: The basic transaction object
+      type: object
+      allOf:
+        - required:
+            - requestTimestamp
+            - status
+            - id
+          type: object
+          properties:
+            status:
+              $ref: '#/components/schemas/TransactionStatus'
+              description: The current status of the transaction
+            requestTimestamp:
+              format: date-time
+              description: The timestamp describing the moment at which this transaction was requested.
+              type: string
+            processTimestamp:
+              format: date-time
+              description: >-
+                The timestamp describing the moment at which this transaction was processed
+                (either posted or rejected)
+              type: string
+            cancelTimestamp:
+              format: date-time
+              description: The timestamp describing the moment at which this transaction was canceled
+              type: string
+            id:
+              $ref: '#/components/schemas/TransactionId'
+              description: A unique identifier for this transaction
+        - $ref: '#/components/schemas/TransactionRequest'
+      example:
+        status: REQUESTED
+        requestTimestamp: '2020-01-01T12:13:14Z'
+        source:
+          institution: abc bank
+          account: abc1234567
+        target:
+          institution: xyz bank
+          account: '12345678'
+        value:
+          amount: 123.5
+          currency: USD
+    Account:
+      title: Account
+      description: Fully qualified account information
+      type: object
+      properties:
+        institution:
+          type: string
+          example: some bank
+        account:
+          type: string
+          example: abcdefg
+      example:
+        institution: some bank
+        account: abcdefg
+    CurrencyAmount:
+      title: CurrencyAmount
+      description: Currency value and unit
+      type: object
+      properties:
+        amount:
+          format: double
+          type: number
+          example: 123.45
+        currency:
+          type: string
+          example: USD
+      example:
+        amount: 123.45
+        currency: USD
+    PagedTransactionRecords:
+      title: PagedTransactionRecords
+      description: A page of `TransactionRecord` elements
+      required:
+        - transactions
+        - pageMetadata
+      type: object
+      properties:
+        transactions:
+          description: The array holding `TransactionRecord`s for the current page
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionRecord'
+        pageMetadata:
+          $ref: '#/components/schemas/PageMetadata'
+          description: |-
+            `PageMetadata` describing the current page, total number of pages, total number of
+            `TransactionRecord`s, etc.
+    PageMetadata:
+      title: PageMetadata
+      description: Metadata describing information about a paged resource
+      type: object
+      properties:
+        size:
+          format: int32
+          type: integer
+          example: 20
+        totalElements:
+          format: int32
+          type: integer
+          example: 30
+        totalPages:
+          format: int32
+          type: integer
+          example: 2
+        number:
+          format: int32
+          type: integer
+          example: 0
+      example:
+        size: 20
+        totalElements: 30
+        totalPages: 2
+        number: 0
+    ErrorResponse:
+      description: ''
+      required:
+        - success
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/TransactionId'
+          description: 'The `TransactionId` related to the error, if applicable'
+        success:
+          description: Indicates whether the request was successful; always `false`.
+          type: boolean
+        message:
+          description: A message describing the error
+          type: string
+      example:
+        id: some transaction id
+        success: false
+        message: some text
+  responses:
+    TransactionNotFound:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+        text/xml:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: Transaction was not found
+tags:
+  - name: transaction
+    description: Indicates interaction with transactions
